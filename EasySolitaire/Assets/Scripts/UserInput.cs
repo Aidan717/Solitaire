@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class UserInput : MonoBehaviour
 {
+    public GameObject slot1;
     private Solitaire solitaire;
     // Start is called before the first frame update
     void Start()
     {
         solitaire = FindObjectOfType<Solitaire>();
+        slot1 = this.gameObject;
     }
 
     // Update is called once per frame
@@ -27,7 +29,7 @@ public class UserInput : MonoBehaviour
                     Deck();
                 }
                 else if (hit.collider.CompareTag("Card")) {
-                    Card();
+                    Card(hit.collider.gameObject);
                 }
                 else if (hit.collider.CompareTag("Top")){
                     Top();
@@ -44,8 +46,35 @@ public class UserInput : MonoBehaviour
         solitaire.DealFromDeck();
     }
 
-    void Card() {
+    void Card(GameObject selected) {
         print("Clicked on Card");
+
+        //if the card clicked on is facedown
+            // if card clicked on is not blocked
+                //flip it over
+
+        //if the card clicked on is in the deck pile with the trips
+            //if the card is not blocked
+                //select it
+
+        //if the card is face up
+            //if there's no card currently selected
+                //select the card
+
+        //not null because we pass in this gameObject instead
+        if (slot1 = this.gameObject) {
+            slot1 = selected;
+        }
+            
+            //if there is already card selected (and not the same card)
+                //if the new card is eligable to stack on the old card
+                    //stack it
+                //else
+                    //select the new card
+
+            //else if there is already a card selected and it is the same card
+                //if the time is short enough between clicks, it's a double click
+                    //if the card is eligable to fly up to top, then do it
     }
 
     void Top() {
