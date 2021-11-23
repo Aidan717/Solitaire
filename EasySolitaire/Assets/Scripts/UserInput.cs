@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class UserInput : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class UserInput : MonoBehaviour
     void Deck() {
         print("Clicked on Deck");
         solitaire.DealFromDeck();
+        slot1 = this.gameObject;
     }
 
     void Card(GameObject selected) {
@@ -53,39 +55,50 @@ public class UserInput : MonoBehaviour
         if (!selected.GetComponent<Selectable>().faceUp) {
              // if card clicked on is not blocked
                 //flip it over
+            if (!Blocked(selected)) {
                 selected.GetComponent<Selectable>().faceUp = true;
                 slot1 = this.gameObject;
-        }
-           
-
-        //if the card clicked on is in the deck pile with the trips
-            //if the card is not blocked
-                //select it
-
-        //if the card is face up
-            //if there's no card currently selected
-                //select the card
-
-        //not null because we pass in this gameObject instead
-        if (slot1 == this.gameObject) {
-            slot1 = selected;
-        }
-            
-        else if ( slot1 != selected) {        
-            //if there is already card selected (and not the same card)
-            if (Stackable(selected)) { 
-                Stack(selected);
             }
-            else {
-                //select the new card
+        }
+        //if the card clicked on is in the deck pile with the trips 
+        else if (selected.GetComponent<Selectable>().inDeckPile) {
+            //if it is not blocked
+            if (!Blocked(selected)) {
                 slot1 = selected;
             }
-        }   
+        }
+        else {
+           
+
+            //if the card clicked on is in the deck pile with the trips
+                //if the card is not blocked
+                    //select it
+
+            //if the card is face up
+                //if there's no card currently selected
+                    //select the card
+
+            //not null because we pass in this gameObject instead
+            if (slot1 == this.gameObject) {
+                slot1 = selected;
+            }
+                
+            else if ( slot1 != selected) {        
+                //if there is already card selected (and not the same card)
+                if (Stackable(selected)) { 
+                    Stack(selected);
+                }
+                else {
+                    //select the new card
+                    slot1 = selected;
+                }
+            }   
 
 
             //else if there is already a card selected and it is the same card
                 //if the time is short enough between clicks, it's a double click
                     //if the card is eligable to fly up to top, then do it
+        }
     }
 
     void Top() {
@@ -194,4 +207,25 @@ public class UserInput : MonoBehaviour
         slot1 = this.gameObject;
     }
 
+    bool Blocked(GameObject selected) {
+        Selectable s2 = selected.GetComponent<Selectable>();
+        if (s2.inDeckPile == true) {            
+            if (s2.name == solitaire.tripsOnDisplay.Last()) {
+                return false;
+            }
+            else {
+                print(s2.name + " is blocked by " + solitaire.tripsOnDisplay.Last());
+                return true;
+            }
+        }
+        else {
+            //check if it is the bottom card
+            if (s2.name == solitaire.bottoms[s2.row].Last()) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    }
 }
