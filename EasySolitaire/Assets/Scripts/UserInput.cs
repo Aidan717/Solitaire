@@ -69,7 +69,7 @@ public class UserInput : MonoBehaviour
         else if ( slot1 != selected) {        
             //if there is already card selected (and not the same card)
             if (Stackable(selected)) { 
-                //stack it
+                Stack(selected);
             }
             else {
                 //select the new card
@@ -134,4 +134,56 @@ public class UserInput : MonoBehaviour
         }
         return false;
     }
+
+
+    void Stack(GameObject selected) {
+        //if on top of king or empty bottom stack the cards in place
+        //else stack the cards with a negativ y offset
+
+        Selectable s1 = slot1.GetComponent<Selectable>();
+        Selectable s2 = selected.GetComponent<Selectable>();
+        float yOffset = 0.3f;
+
+        if (s2.top || !s2.top && s1.value == 13) {
+            yOffset = 0;
+        }
+        
+        slot1.transform.position = new Vector3(selected.transform.position.x, selected.transform.position.y - yOffset, selected.transform.position.z - 0.01f);
+        slot1.transform.parent = selected.transform; //this makes the children move with the parents
+
+        //removes the cards from the top pile to prevent duplicate cards
+        if (s1.inDeckPile) { 
+            solitaire.tripsOnDisplay.Remove(slot1.name);
+        }
+        //allows movement of cards between top spots 
+        else if (s1.top && s2.top && s1.value == 1) {
+            solitaire.topPos[s1.row].GetComponent<Selectable>().value = 0;
+            solitaire.topPos[s1.row].GetComponent<Selectable>().suit = null;
+        }
+        //keeps track of the current value of the top decks as a card has been removed.
+        else if (s1.top) {
+            solitaire.topPos[s1.row].GetComponent<Selectable>().value = s1.value -1;
+        }
+        //removes the card string from the appropriate bottom list
+        else {
+            solitaire.bottoms[s1.row].Remove(slot1.name);
+        }
+        
+        //cannot add cards to the trips pile so this is always fine
+        s1.inDeckPile = false;
+        s1.row = s2.row;
+
+        if (s2.top) {
+            solitaire.topPos[s1.row].GetComponent<Selectable>().value = s1.value;
+            solitaire.topPos[s1.row].GetComponent<Selectable>().suit = s1.suit;
+            s1.top = true;
+        }
+        else {
+            s1.top = false;
+        }
+
+        //after completing move reset slot1 to be essentially null as being null will break the logic
+        slot1 = this.gameObject;
+    }
+
 }
