@@ -33,10 +33,10 @@ public class UserInput : MonoBehaviour
                     Card(hit.collider.gameObject);
                 }
                 else if (hit.collider.CompareTag("Top")){
-                    Top();
+                    Top(hit.collider.gameObject);
                 }
                 else if (hit.collider.CompareTag("Bottom")) {
-                    Bottom();
+                    Bottom(hit.collider.gameObject);
                 }
             }
         }
@@ -101,12 +101,24 @@ public class UserInput : MonoBehaviour
         }
     }
 
-    void Top() {
+    void Top(GameObject selected) {
         print("Clicked on Top");
+        if (slot1.CompareTag("Card")) {
+            //if the card is an ace and the empty slot is top, then stack
+            if (slot1.GetComponent<Selectable>().value == 1) {
+                Stack(selected);
+            }
+        }
     }
 
-    void Bottom() {
+    void Bottom(GameObject selected) {
         print("Clicked on Bottom");
+        if (slot1.CompareTag("Card")) {
+            //if the card is a king and the empty slot is bottom, then stack
+            if (slot1.GetComponent<Selectable>().value == 13) {
+                Stack(selected);
+            }
+        }
     }
 
     bool Stackable(GameObject selected) {
