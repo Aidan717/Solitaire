@@ -50,8 +50,13 @@ public class UserInput : MonoBehaviour
         print("Clicked on Card");
 
         //if the card clicked on is facedown
-            // if card clicked on is not blocked
+        if (!selected.GetComponent<Selectable>().faceUp) {
+             // if card clicked on is not blocked
                 //flip it over
+                selected.GetComponent<Selectable>().faceUp = true;
+                slot1 = this.gameObject;
+        }
+           
 
         //if the card clicked on is in the deck pile with the trips
             //if the card is not blocked
