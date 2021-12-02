@@ -34,8 +34,11 @@ public class Solitaire : MonoBehaviour
     private int trips;
     private int tripsRemainder;
     // Start is called before the first frame update
+
+    private UserInput userInput;
     void Start()
     {
+        userInput = FindObjectOfType<UserInput>();
         bottoms = new List<string>[] {bottom0, bottom1, bottom2, bottom3, bottom4, bottom5, bottom6};
         PlayCards();
     }
@@ -47,7 +50,7 @@ public class Solitaire : MonoBehaviour
     }
 
     public void PlayCards() {
-        
+        userInput.SetGameObject();
         foreach (List<string> list in bottoms) {
             list.Clear();
         }

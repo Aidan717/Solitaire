@@ -59,6 +59,10 @@ public class UserInput : MonoBehaviour
         }
     }
 
+    public void SetGameObject() {
+        slot1 = this.gameObject;
+    }
+
     void Deck() {
         print("Clicked on Deck");
         solitaire.DealFromDeck();
