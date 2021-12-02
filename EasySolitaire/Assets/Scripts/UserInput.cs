@@ -7,6 +7,10 @@ public class UserInput : MonoBehaviour
 {
     public GameObject slot1;
     private Solitaire solitaire;
+
+    private float timer;
+    private float doubleClickTime = 0.3f;
+    private int clickCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,11 +21,24 @@ public class UserInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (clickCount == 1) {
+            timer += Time.deltaTime;
+        }
+        if (clickCount == 3) {
+            timer = 0;
+            clickCount = 1;
+        }
+        if (timer > doubleClickTime) {
+            timer = 0;
+            clickCount = 0;
+        }
+
         GetMouseClick();
     }
 
     void GetMouseClick() {
         if (Input.GetMouseButtonDown(0)) {
+            clickCount++;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if(hit) {
@@ -64,11 +81,21 @@ public class UserInput : MonoBehaviour
         else if (selected.GetComponent<Selectable>().inDeckPile) {
             //if it is not blocked
             if (!Blocked(selected)) {
-                slot1 = selected;
+                if (slot1 == selected) {
+                    if (DoubleClick()) {
+                        // attempt auto stack
+                        AutoStack(selected);
+                    }
+                }
+                else {
+                    slot1 = selected;
+                }
+
+               
             }
         }
         else {
-           
+        
 
             //if the card clicked on is in the deck pile with the trips
                 //if the card is not blocked
@@ -95,9 +122,13 @@ public class UserInput : MonoBehaviour
             }   
 
 
-            //else if there is already a card selected and it is the same card
-                //if the time is short enough between clicks, it's a double click
-                    //if the card is eligable to fly up to top, then do it
+            // if the same card is clicked twice, at bottomPos
+            else if (slot1 == selected) {
+                if (DoubleClick()) {
+                    // attempt to auto stack
+                    AutoStack(selected);
+                }
+            }
         }
     }
 
@@ -238,6 +269,72 @@ public class UserInput : MonoBehaviour
             else {
                 return true;
             }
+        }
+    }
+    bool DoubleClick() {
+        if (timer < doubleClickTime && clickCount == 2) {
+            print("Double Click");
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    void AutoStack(GameObject selected) {
+        for (int i = 0; i < solitaire.topPos.Length; i++) {
+            Selectable stack = solitaire.topPos[i].GetComponent<Selectable>();
+            //if it is an ace
+            if (selected.GetComponent<Selectable>().value == 1) {
+                //and the top position is empty
+                if (solitaire.topPos[i].GetComponent<Selectable>().value == 0) {
+                    slot1 = selected;
+                    //stack the ace up top
+                    Stack(stack.gameObject);
+                    //in the first empty position found
+                    break;
+                }
+            }
+            else {
+                if ((solitaire.topPos[i].GetComponent<Selectable>().suit == slot1.GetComponent<Selectable>().suit) && (solitaire.topPos[i].GetComponent<Selectable>().value == slot1.GetComponent<Selectable>().value - 1)) {
+                    //if it is the last card (if it has no children) 
+                    if (HasNoChildren(slot1)) {
+                        
+                        slot1 = selected;
+                        //find a top spot that matches the conditions for auto stacking if it exists
+                        string lastCardname = stack.suit + stack.value.ToString();
+                        if (stack.value == 1) {
+                            lastCardname = stack.suit + "A";
+                        }
+                        if (stack.value == 11) {
+                            lastCardname = stack.suit + "J";
+                        }
+                        if (stack.value == 12) {
+                            lastCardname = stack.suit + "Q";
+                        }
+                        if (stack.value == 13) {
+                            lastCardname = stack.suit + "K";
+                        }
+                        GameObject lastCard = GameObject.Find(lastCardname);
+                        Stack(lastCard);
+                        break;
+                    
+                    }
+                }
+            }
+        }
+    }
+
+    bool HasNoChildren(GameObject card) {
+        int i = 0;
+        foreach (Transform child in card.transform) {
+            i++;
+        }
+        if (i == 0) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 }
