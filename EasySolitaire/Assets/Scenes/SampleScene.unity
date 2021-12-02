@@ -821,7 +821,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &604439645
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2243,7 +2243,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d8592d5534afd14286c50f2007883a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topStacks: []
+  topStacks:
+  - {fileID: 1700995476}
+  - {fileID: 2040625555}
+  - {fileID: 2004388041}
+  - {fileID: 727527341}
+  highScorePanel: {fileID: 604439644}
 --- !u!1 &1867101362
 GameObject:
   m_ObjectHideFlags: 0
@@ -2407,7 +2412,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1874234007}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2011234021}
+        m_TargetAssemblyTypeName: UIButtons, Assembly-CSharp
+        m_MethodName: PlayAgain
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1874234007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2666,6 +2683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 446d8af9a43a6ad49a8be6ae22d0230a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highScorePanel: {fileID: 604439644}
 --- !u!114 &2011234022
 MonoBehaviour:
   m_ObjectHideFlags: 0
