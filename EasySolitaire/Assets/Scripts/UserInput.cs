@@ -59,6 +59,7 @@ public class UserInput : MonoBehaviour
         }
     }
 
+    // Used to avoid null reference when resetting while a card is highlighted
     public void SetGameObject() {
         slot1 = this.gameObject;
     }
